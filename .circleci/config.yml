@@ -38,6 +38,7 @@ jobs:
         - run:
             name: Push Docker Image to Docker Hub
             command: |
+              docker build -t kelanik8/capstone_project .
               docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD 
               docker push kelanik8/capstone_project
 
