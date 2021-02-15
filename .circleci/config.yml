@@ -21,6 +21,8 @@ jobs:
         - image: docker:17.05.0-ce-git
       steps:
         - checkout
+        - setup_remote_docker:
+            version: 19.03.13
         - run:
             name: Build Docker Image
             command: |
@@ -31,6 +33,8 @@ jobs:
         - image: docker:17.05.0-ce-git
       steps:
         - checkout
+        - setup_remote_docker:
+            version: 19.03.13
         - run:
             name: Push Docker Image to Docker Hub
             command: |
