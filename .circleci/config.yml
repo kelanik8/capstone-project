@@ -24,7 +24,18 @@ jobs:
         - run:
             name: Build Docker Image
             command: |
-              ls
+              docker build -t kelanik8/capstone_project .
+
+    push-docker-image:
+      docker:
+        - image: circleci/node:13.8.0
+      steps:
+        - checkout
+        - run:
+            name: Push Docker Image to Docker Hub
+            command: |
+              docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD 
+              docker push kelanik8/capstone_project
 
 
 workflows:
@@ -32,3 +43,4 @@ workflows:
     jobs:
       - run-lint
       - build-docker-image
+      - push-docker-image
