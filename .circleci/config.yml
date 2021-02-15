@@ -1,0 +1,47 @@
+version: 2.1
+
+jobs:
+  build-frontend:
+    docker:
+      - image: circleci/node:13.8.0
+    steps:
+      - checkout
+      - restore_cache:
+          keys: [frontend-build]
+      - run:
+          name: Install dependencies with NPM
+          command: cd frontend && npm install
+      - run:
+          name: Build front-end
+          command: cd frontend && npm run build
+      - save_cache:
+          paths: [node_modules]
+          key: frontend-build
+
+    run-lint:
+      steps:
+        - checkout
+        - run:
+            name: install dependencies
+            command: |
+              sudo wget -O /bin/hadolint https://github.com/hadolint/hadolint/releases/download/v1.16.3/hadolint-Linux-x86_64
+              sudo chmod +x /bin/hadolint
+        - run:
+            name: Run Lint
+            command: |
+              hadolint Dockerfile
+
+    build-docker-image:
+      steps:
+        - checkout
+        - run:
+            name: Build Docker Image
+            command: |
+              ls
+
+
+workflows:
+  default:
+    jobs:
+      - run-lint
+      - build-docker-image
