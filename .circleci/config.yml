@@ -1,24 +1,9 @@
 version: 2.1
 
 jobs:
-  build-frontend:
-    docker:
-      - image: circleci/node:13.8.0
-    steps:
-      - checkout
-      - restore_cache:
-          keys: [frontend-build]
-      - run:
-          name: Install dependencies with NPM
-          command: cd frontend && npm install
-      - run:
-          name: Build front-end
-          command: cd frontend && npm run build
-      - save_cache:
-          paths: [node_modules]
-          key: frontend-build
-
     run-lint:
+      docker:
+        - image: circleci/node:13.8.0
       steps:
         - checkout
         - run:
@@ -32,6 +17,8 @@ jobs:
               hadolint Dockerfile
 
     build-docker-image:
+      docker:
+        - image: circleci/node:13.8.0
       steps:
         - checkout
         - run:
