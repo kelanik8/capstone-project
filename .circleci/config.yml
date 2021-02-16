@@ -1,7 +1,7 @@
 version: 2.1
 
 jobs:
-    run-lint:
+    run-build:
       docker:
         - image: circleci/node:13.8.0
       steps:
@@ -11,30 +11,20 @@ jobs:
             command: |
               sudo wget -O /bin/hadolint https://github.com/hadolint/hadolint/releases/download/v1.16.3/hadolint-Linux-x86_64
               sudo chmod +x /bin/hadolint
+
         - run:
             name: Run Lint
             command: |
               hadolint Dockerfile
 
-    build-docker-image:
-      docker:
-        - image: docker:17.05.0-ce-git
-      steps:
-        - checkout
         - setup_remote_docker:
             version: 19.03.13
+
         - run:
             name: Build Docker Image
             command: |
               docker build -t kelanik8/capstone_project .
 
-    push-docker-image:
-      docker:
-        - image: docker:17.05.0-ce-git
-      steps:
-        - checkout
-        - setup_remote_docker:
-            version: 19.03.13
         - run:
             name: Push Docker Image to Docker Hub
             command: |
@@ -42,10 +32,7 @@ jobs:
               docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD 
               docker push kelanik8/capstone_project
 
-
 workflows:
   default:
     jobs:
-      - run-lint
-      - build-docker-image
-      - push-docker-image
+      - run-build
