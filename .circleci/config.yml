@@ -45,7 +45,7 @@ jobs:
       parameters:
         cluster-name:
           description: |
-            CapStone EKS cluster
+            CapStone cluster
           type: string
       steps:
         - checkout
@@ -63,9 +63,9 @@ workflows:
     jobs:
       - run-build
       - aws-eks/create-cluster:
-          cluster-name: capstone-deployment
+          cluster-name: capstone-proj-deployment
       - create-deployment:
-          cluster-name: capstone-deployment
+          cluster-name: capstone-proj-deployment
           requires:
             - aws-eks/create-cluster
       - aws-eks/update-container-image:
