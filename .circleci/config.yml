@@ -36,7 +36,7 @@ jobs:
               echo 'export TAG=0.1.${CIRCLE_BUILD_NUM}' >> $BASH_ENV
               echo 'export IMAGE_NAME=capstone' >> $BASH_ENV
 
-              docker build -t kelanik8/capstone:${CIRCLE_WORKFLOW_ID:0:7} .
+              docker build -t kelanik8/capstone .
               docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD 
               docker push kelanik8/$IMAGE_NAME:$TAG
 
@@ -45,7 +45,7 @@ jobs:
       parameters:
         cluster-name:
           description: |
-            Name of the EKS cluster
+            CapStone EKS cluster
           type: string
       steps:
         - checkout
@@ -63,13 +63,13 @@ workflows:
     jobs:
       - run-build
       - aws-eks/create-cluster:
-          cluster-name: eks-demo-deployment
+          cluster-name: capstone-deployment
       - create-deployment:
-          cluster-name: eks-demo-deployment
+          cluster-name: capstone-deployment
           requires:
             - aws-eks/create-cluster
       - aws-eks/update-container-image:
-          cluster-name: eks-demo-deployment
+          cluster-name: capstone-deployment
           resource-name: "deployments/deployment.yml"
           container-image-updates: "nginx=nginx:1.9.1"
           record: true
