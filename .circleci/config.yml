@@ -38,7 +38,7 @@ jobs:
 
               docker build -t kelanik8/capstone .
               docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD 
-              docker push kelanik8/$IMAGE_NAME:$TAG
+              docker push kelanik8/capstone
 
     create-deployment:
       executor: aws-eks/python3
