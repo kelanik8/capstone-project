@@ -1,5 +1,8 @@
 version: 2.1
 
+orbs:
+  aws-eks: circleci/aws-eks@1.0.3
+
 jobs:
     run-build:
       docker:
@@ -28,11 +31,45 @@ jobs:
         - run:
             name: Push Docker Image to Docker Hub
             command: |
-              docker build -t kelanik8/capstone_project .
+              echo 'export TAG=0.1.${CIRCLE_BUILD_NUM}' >> $BASH_ENV
+              echo 'export IMAGE_NAME=capstone' >> $BASH_ENV
+
+              docker build -t kelanik8/$IMAGE_NAME:$TAG .
               docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD 
-              docker push kelanik8/capstone_project
+              docker push kelanik8/$IMAGE_NAME:$TAG
+
+    create-deployment:
+      executor: aws-eks/python3
+      parameters:
+        cluster-name:
+          description: |
+            Name of the EKS cluster
+          type: string
+      steps:
+        - checkout
+        - aws-eks/update-kubeconfig-with-authenticator:
+            cluster-name: << parameters.cluster-name >>
+            install-kubectl: true
+        - kubernetes/create-or-update-resource:
+            resource-file-path: "deployments/deployment.yml"
+            resource-name: "deployments/capstone-deployment"
+            get-rollout-status: true
+            show-kubectl-command: true
 
 workflows:
   default:
     jobs:
       - run-build
+      - aws-eks/create-cluster:
+          cluster-name: eks-demo-deployment
+      - create-deployment:
+          cluster-name: eks-demo-deployment
+          requires:
+            - aws-eks/create-cluster
+      - aws-eks/update-container-image:
+          cluster-name: eks-demo-deployment
+          resource-name: "deployments/deployment.yml"
+          container-image-updates: "nginx=nginx:1.9.1"
+          record: true
+          requires:
+            - create-deployment
