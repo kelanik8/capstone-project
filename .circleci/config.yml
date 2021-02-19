@@ -54,7 +54,7 @@ jobs:
             install-kubectl: true
         - kubernetes/create-or-update-resource:
             resource-file-path: "deployments/deployment.yml"
-            resource-name: "deployments/capstone-deployment"
+            resource-name: "deployments/deployment.yml"
             get-rollout-status: true
             show-kubectl-command: true
 
