@@ -46,10 +46,10 @@ jobs:
         - run:
             name: Push Docker Image to Docker Hub
             command: |
-              echo 'export TAG=0.1.${CIRCLE_BUILD_NUM}' >> $BASH_ENV
-              echo 'export IMAGE_NAME=capstone' >> $BASH_ENV
+              export TAG=${CIRCLE_BUILD_NUM}
+              export IMAGE_NAME=capstone
 
-              docker build -t kelanik8/capstone .
+              docker build -t kelanik8/$TAG .
               docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD 
               docker push kelanik8/capstone
 
