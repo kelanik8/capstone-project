@@ -6,7 +6,7 @@ orbs:
   kubernetes: circleci/kubernetes@0.3.0
 
 jobs:
-    run-build:
+    run-lint:
       docker:
         - image: circleci/node:13.8.0
       steps:
@@ -16,11 +16,17 @@ jobs:
             command: |
               sudo wget -O /bin/hadolint https://github.com/hadolint/hadolint/releases/download/v1.16.3/hadolint-Linux-x86_64
               sudo chmod +x /bin/hadolint
-
         - run:
             name: Run Lint
             command: |
               hadolint Dockerfile
+
+      
+    build-docker-image:
+      docker:
+        - image: circleci/node:13.8.0
+      steps:
+        - checkout
 
         - setup_remote_docker:
             version: 19.03.13
@@ -30,6 +36,13 @@ jobs:
             command: |
               docker build -t kelanik8/capstone_project .
 
+    push-docker-image:
+      docker:
+        - image: circleci/node:13.8.0
+      steps:
+        - checkout
+        - setup_remote_docker:
+            version: 19.03.13
         - run:
             name: Push Docker Image to Docker Hub
             command: |
@@ -61,7 +74,11 @@ jobs:
 workflows:
   default:
     jobs:
-      - run-build
+      - run-lint
+      - build-docker-image
+      - push-docker-image:
+          requires:
+            - "build-docker-image"
       - aws-eks/create-cluster:
           cluster-name: capstone-proj-deployment
       - create-deployment:
