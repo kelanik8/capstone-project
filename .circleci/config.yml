@@ -49,9 +49,9 @@ jobs:
               export TAG=${CIRCLE_BUILD_NUM}
               export IMAGE_NAME=capstone
 
-              docker build -t kelanik8/$TAG .
+              docker build -t kelanik8/$IMAGE_NAME .
               docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD 
-              docker push kelanik8/capstone
+              docker push kelanik8/$IMAGE_NAME:$TAG
 
     create-deployment:
       executor: aws-eks/python3
