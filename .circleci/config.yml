@@ -157,30 +157,30 @@ workflows:
           path: ~/project/
           tag: ${CIRCLE_SHA1}
       - aws-eks/create-cluster:
-          cluster-name: eks-orb-capstone-project-deployment
+          cluster-name: eks-orb-capstone-project-deployment-${CIRCLE_WORKFLOW_ID:0:7}
           aws-region: $AWS_DEFAULT_REGION
           requires:
             - build-and-push-image-ecr
       - deploy-application:
-          cluster-name: eks-orb-capstone-project-deployment
+          cluster-name: eks-orb-capstone-project-deployment-${CIRCLE_WORKFLOW_ID:0:7}
           aws-region: $AWS_DEFAULT_REGION
           docker-image-name: "${AWS_ECR_URL}/eks_orb_capstone_project:${CIRCLE_SHA1}"
           version-info: "${CIRCLE_SHA1}"
           requires:
             - aws-eks/create-cluster
       - test-application:
-          cluster-name: eks-orb-capstone-project-deployment
+          cluster-name: eks-orb-capstone-project-deployment-${CIRCLE_WORKFLOW_ID:0:7}
           aws-region: $AWS_DEFAULT_REGION
           expected-version-info: "${CIRCLE_SHA1}"
           requires:
             - deploy-application
       - undeploy-application:
-          cluster-name: eks-orb-capstone-project-deployment
+          cluster-name: eks-orb-capstone-project-deployment-${CIRCLE_WORKFLOW_ID:0:7}
           aws-region: $AWS_DEFAULT_REGION
           requires:
             - test-application
       - aws-eks/delete-cluster:
-          cluster-name: eks-orb-capstone-project-deployment
+          cluster-name: eks-orb-capstone-project-deployment-${CIRCLE_WORKFLOW_ID:0:7}
           aws-region: $AWS_DEFAULT_REGION
           wait: true
           requires:
