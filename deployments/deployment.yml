@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: app
-        image: kelanik8/capstone_project
+        image: kelanik8/capstone_project:latest
         resources:
           requests:
             cpu: 100m
