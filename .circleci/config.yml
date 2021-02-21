@@ -98,6 +98,11 @@ jobs:
               AWS region
             type: string
             default: ""
+          expected-version-info:
+            description: |
+              Expected app version (this is used for testing that the
+              correct version has been deployed)
+            type: string
         steps:
           - aws-eks/update-kubeconfig-with-authenticator:
               cluster-name: << parameters.cluster-name >>
