@@ -21,7 +21,6 @@ jobs:
             command: |
               hadolint Dockerfile
 
-      
     build-docker-image:
       docker:
         - image: circleci/node:13.8.0
@@ -34,7 +33,9 @@ jobs:
         - run:
             name: Build Docker Image
             command: |
-              docker build -t kelanik8/capstone_project .
+              export TAG=v${CIRCLE_BUILD_NUM}
+              export IMAGE_NAME=capstone
+              docker build -t kelanik8/$IMAGE_NAME:$TAG .
 
     push-docker-image:
       docker:
